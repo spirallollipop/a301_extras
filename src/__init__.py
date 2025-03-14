@@ -3,7 +3,7 @@ from pathlib import Path
 from importlib.metadata import version, PackageNotFoundError
 
 try:
-    __version__ = version("a301_thermo")
+    __version__ = version("plot_utils")
 except PackageNotFoundError:
     __version__ = "unknown version"
 
@@ -12,4 +12,4 @@ try:
 except ImportError:
     version_tuple = (0, 0, "unknown version")
 
-print("in a301_thermo init")
+print("in a301_extras init")

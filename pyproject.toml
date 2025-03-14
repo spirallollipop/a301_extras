@@ -10,7 +10,7 @@ build-backend = 'setuptools.build_meta'
 
 [project]
 name = "a301_extras"
-description = "a301 satellite code"
+description = "a301 code"
 authors = [
   { name="Philip Austin", email="paustin@eoas.ubc.ca" },
 ]
