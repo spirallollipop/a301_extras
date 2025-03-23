@@ -1,3 +1,5 @@
+import numpy as np
+
 def calcScaleHeight(df):
     """
     Calculate the pressure scale height H_p

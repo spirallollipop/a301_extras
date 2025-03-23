@@ -16,9 +16,16 @@ authors = [
 ]
 dynamic = ["version"]   
 
-[tool.setuptools_scm]
-write_to = "src/_version.py"
+dependencies = [
+    "xarray",
+    "numpy",
+    "matplotlib",
+    "pyproj"
+]
 
+[tool.setuptools_scm]
+write_to = "src/a301_extras/_version.py"
+root = "."
 
 
 
