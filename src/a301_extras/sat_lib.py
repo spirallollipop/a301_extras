@@ -1,6 +1,9 @@
 import xarray
 from numpy.typing import NDArray
 import numpy as np
+from skimage import exposure, img_as_ubyte
+from copy import deepcopy
+
 
 def make_dataset(
       scene_dict: dict)-> xarray.Dataset:
@@ -128,3 +131,50 @@ def make_false_color(
     false_color.rio.write_crs(crs, inplace=True)
     false_color.rio.write_transform(transform, inplace=True)
     return false_color
+
+def mask_image(
+    image_da:xarray.DataArray,
+    fmask_da:xarray.DataArray,
+    mask_value:np.uint8) -> xarray.DataArray:
+    """
+    given an image, a bit mask, and a mask value, 
+    return the modified image with all masked values set to np.nan
+
+    Parameters
+    ----------
+
+    image_da: a rioxarray data array with a single band image
+    fmask_da: landsat fmask with the same bounding box
+    mask_value: bits to mask, like  0b00100011
+
+    Returns
+    -------
+
+    masked_da: a copy of image_da array 
+    with masked values set to np.nan
+    """
+    scene_mask = fmask_da.data
+    ref_mask = np.zeros_like(fmask_da.data)
+    ref_mask[...] = mask_value
+    masked_values = np.bitwise_and(scene_mask,ref_mask)
+    #
+    # change all masked values to placeholder
+    #
+    hit = masked_values > 0
+    masked_values[hit]= 40  #placeholder
+    fmask_float = masked_values.astype(np.float32)
+    #
+    # bad pixels are all 40
+    #
+    fmask_float[fmask_float == 40] = np.nan
+    #
+    # good pixels are all zero
+    #
+    fmask_float[fmask_float == 0] = 1
+    #
+    # return the masked image
+    #
+    image_copy = deepcopy(image_da)
+    image_copy.data = image_da.data*fmask_float
+    return image_copy
+    
